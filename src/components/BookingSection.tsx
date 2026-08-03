@@ -6,7 +6,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CheckCircle, X, Plus } from 'lucide-react';
+import { CheckCircle, X, Plus, Sparkles } from 'lucide-react';
 
 type ServiceType = typeof SERVICES[0];
 
@@ -205,7 +205,7 @@ const BookingSection = () => {
   }, [selectedService]);
 
   const handleSelectService = (s: ServiceType) => {
-    if (s.options && s.options.length > 0) {
+    if (s.category === 'Cílios - Manutenção') {
       setPendingService(s);
       setShowOptionModal(true);
     } else {
@@ -595,7 +595,7 @@ const BookingSection = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card p-6 md:p-8 rounded-3xl card-shadow w-full max-w-md border border-border relative text-center"
+              className="bg-card p-6 md:p-8 rounded-3xl card-shadow w-full max-w-md border border-primary/20 relative text-center space-y-6"
             >
               <button
                 onClick={() => {
@@ -607,32 +607,31 @@ const BookingSection = () => {
                 <X className="w-5 h-5" />
               </button>
               
-              <h3 className="text-xl font-bold mb-2">Prazo da Manutenção</h3>
-              <p className="text-muted-foreground text-sm mb-6">
-                Escolha o prazo de manutenção para o serviço <span className="text-primary font-semibold">{pendingService.name}</span>:
-              </p>
+              <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <Sparkles className="w-6 h-6 animate-pulse" />
+              </div>
 
-              <div className="flex flex-col gap-3">
-                {pendingService.options?.map((opt) => (
-                  <button
-                    key={opt.label}
-                    onClick={() => {
-                      setSelectedService(pendingService);
-                      setSelectedOption(opt);
-                      setPendingService(null);
-                      setShowOptionModal(false);
-                      setExtras([]);
-                      setStep(2);
-                    }}
-                    className="flex justify-between items-center p-4 rounded-xl border border-border hover:border-primary/50 bg-secondary/50 hover:bg-secondary/85 transition-all text-left"
-                  >
-                    <div>
-                      <span className="font-semibold text-foreground block">{opt.label}</span>
-                      <span className="text-xs text-muted-foreground">{opt.time} min</span>
-                    </div>
-                    <span className="text-lg font-mono font-bold text-primary">R$ {opt.price}</span>
-                  </button>
-                ))}
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-foreground">Regra de Manutenção</h3>
+                <p className="text-sm text-foreground/80 leading-relaxed text-center px-2">
+                  Manutenção válida entre <span className="font-bold text-primary">15 e 22 dias</span>. Após esse período, será cobrado o valor de uma nova aplicação.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => {
+                    setSelectedService(pendingService);
+                    setSelectedOption(null);
+                    setPendingService(null);
+                    setShowOptionModal(false);
+                    setExtras([]);
+                    setStep(2);
+                  }}
+                  className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Estou ciente e aceito
+                </button>
               </div>
             </motion.div>
           </motion.div>

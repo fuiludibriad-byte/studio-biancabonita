@@ -35,13 +35,13 @@ export interface Booking {
 
 export const SERVICES: Service[] = [
   // Cílios - Aplicação
-  { name: 'Volume Brasileiro', time: 90, price: 160, image: 'https://i.imgur.com/OJ5KOJW.jpeg', category: 'Cílios - Aplicação' },
-  { name: 'Volume Egípcio', time: 90, price: 165, image: 'https://i.imgur.com/nhJeVtG.jpeg', category: 'Cílios - Aplicação' },
-  { name: 'Lash Rímel Glow', time: 90, price: 165, image: 'https://i.imgur.com/9hnTIMB.jpeg', category: 'Cílios - Aplicação' },
-  { name: 'Efeito Fox', time: 90, price: 165, image: 'https://i.imgur.com/cgVl6Iu.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Volume Brasileiro', time: 90, price: 150, image: 'https://i.imgur.com/OJ5KOJW.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Volume Egípcio', time: 90, price: 160, image: 'https://i.imgur.com/nhJeVtG.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Lash Rímel Glow', time: 90, price: 150, image: 'https://i.imgur.com/9hnTIMB.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Efeito Fox', time: 90, price: 160, image: 'https://i.imgur.com/cgVl6Iu.jpeg', category: 'Cílios - Aplicação' },
   { name: 'Mega Egípcio', time: 120, price: 180, image: 'https://i.imgur.com/IBcYbpI.jpeg', category: 'Cílios - Aplicação' },
   { name: 'Mega Fada', time: 120, price: 185, image: 'https://i.imgur.com/SzmT968.jpeg', category: 'Cílios - Aplicação' },
-  { name: 'Mega Brasileiro', time: 120, price: 175, image: 'https://i.imgur.com/85hifhM.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Mega Brasileiro', time: 120, price: 170, image: 'https://i.imgur.com/85hifhM.jpeg', category: 'Cílios - Aplicação' },
   { name: 'Lash Lifting', time: 90, price: 110, image: 'https://i.imgur.com/IQZ0AhJ.jpeg', category: 'Cílios - Aplicação' },
   { name: 'Brow Lamination', time: 100, price: 110, image: 'https://i.imgur.com/hzv1r1T.jpeg', category: 'Cílios - Aplicação' },
 
@@ -49,79 +49,51 @@ export const SERVICES: Service[] = [
   {
     name: 'Manutenção Volume Brasileiro',
     time: 60,
-    price: 115,
+    price: 110,
     image: 'https://i.imgur.com/1qInlNx.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 115, time: 60 },
-      { label: 'Após 20 dias', price: 125, time: 90 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Volume Egípcio',
     time: 60,
-    price: 125,
+    price: 120,
     image: 'https://i.imgur.com/ZmwUp4n.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 125, time: 60 },
-      { label: 'Após 20 dias', price: 135, time: 90 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Lash Rímel Glow',
     time: 60,
-    price: 120,
+    price: 115,
     image: 'https://i.imgur.com/9UAhSTj.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 120, time: 60 },
-      { label: 'Após 20 dias', price: 140, time: 90 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Efeito Fox',
     time: 60,
-    price: 120,
+    price: 115,
     image: 'https://i.imgur.com/YfaPS3o.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 120, time: 60 },
-      { label: 'Após 20 dias', price: 140, time: 90 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Mega Egípcio',
     time: 110,
     price: 135,
     image: 'https://i.imgur.com/yVCA8vT.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 135, time: 110 },
-      { label: 'Após 20 dias', price: 140, time: 120 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Mega Fada',
     time: 110,
     price: 140,
     image: 'https://i.imgur.com/qbJMqXw.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 140, time: 110 },
-      { label: 'Após 20 dias', price: 145, time: 120 }
-    ]
+    category: 'Cílios - Manutenção'
   },
   {
     name: 'Manutenção Mega Brasileiro',
     time: 110,
-    price: 135,
+    price: 130,
     image: 'https://i.imgur.com/NfoUWim.jpeg',
-    category: 'Cílios - Manutenção',
-    options: [
-      { label: 'Até 20 dias', price: 135, time: 110 },
-      { label: 'Após 20 dias', price: 145, time: 120 }
-    ]
+    category: 'Cílios - Manutenção'
   },
 
   // Remoção cílios

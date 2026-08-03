@@ -112,26 +112,28 @@ function getServicePrice(service: string): number {
   
   // Cílios - Manutenção
   if (cleanSvc.includes('manutenção') || cleanSvc.includes('manutencao')) {
-    const isAte20 = cleanSvc.includes('até 20') || cleanSvc.includes('ate 20');
-    if (cleanSvc.includes('brasileiro')) return isAte20 ? 115 : 125;
-    if (cleanSvc.includes('egípcio') || cleanSvc.includes('egipcio')) {
-      if (cleanSvc.includes('mega')) return isAte20 ? 135 : 140;
-      return isAte20 ? 125 : 135;
+    if (cleanSvc.includes('brasileiro')) {
+      if (cleanSvc.includes('mega')) return 130;
+      return 110;
     }
-    if (cleanSvc.includes('glow') || cleanSvc.includes('rímel') || cleanSvc.includes('rimel')) return isAte20 ? 120 : 140;
-    if (cleanSvc.includes('fox')) return isAte20 ? 120 : 140;
-    if (cleanSvc.includes('fada')) return isAte20 ? 140 : 145;
-    return isAte20 ? 115 : 125; // default fallback for maintenance
+    if (cleanSvc.includes('egípcio') || cleanSvc.includes('egipcio')) {
+      if (cleanSvc.includes('mega')) return 135;
+      return 120;
+    }
+    if (cleanSvc.includes('glow') || cleanSvc.includes('rímel') || cleanSvc.includes('rimel')) return 115;
+    if (cleanSvc.includes('fox')) return 115;
+    if (cleanSvc.includes('fada')) return 140;
+    return 110; // default fallback for maintenance
   }
   
   // Cílios - Aplicação
-  if (cleanSvc.includes('volume brasileiro')) return 160;
-  if (cleanSvc.includes('volume egípcio') || cleanSvc.includes('volume egipcio')) return 165;
-  if (cleanSvc.includes('glow') || cleanSvc.includes('rímel') || cleanSvc.includes('rimel')) return 165;
-  if (cleanSvc.includes('fox')) return 165;
+  if (cleanSvc.includes('volume brasileiro')) return 150;
+  if (cleanSvc.includes('volume egípcio') || cleanSvc.includes('volume egipcio')) return 160;
+  if (cleanSvc.includes('glow') || cleanSvc.includes('rímel') || cleanSvc.includes('rimel')) return 150;
+  if (cleanSvc.includes('fox')) return 160;
   if (cleanSvc.includes('mega egípcio') || cleanSvc.includes('mega egipcio')) return 180;
   if (cleanSvc.includes('mega fada')) return 185;
-  if (cleanSvc.includes('mega brasileiro')) return 175;
+  if (cleanSvc.includes('mega brasileiro')) return 170;
   if (cleanSvc.includes('lifting')) return 110;
   if (cleanSvc.includes('lamination') || cleanSvc.includes('brow')) return 110;
   
