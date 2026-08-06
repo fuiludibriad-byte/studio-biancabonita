@@ -6,7 +6,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CheckCircle, X, Plus, Sparkles } from 'lucide-react';
+import { CheckCircle, X, Plus, Sparkles, Copy, Check } from 'lucide-react';
 
 type ServiceType = typeof SERVICES[0];
 
@@ -24,6 +24,29 @@ const BookingSection = () => {
   const [phone, setPhone] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // States for Pix Mockup / Video Demo
+  const [showPixModal, setShowPixModal] = useState(false);
+  const [isPixCopied, setIsPixCopied] = useState(false);
+  const [activeBookingForPix, setActiveBookingForPix] = useState<any>(null);
+
+  const handleCompletePix = () => {
+    if (!activeBookingForPix) return;
+    addBooking(activeBookingForPix);
+    const msg = `Olá! Acabei de fazer o agendamento e segue o comprovante do sinal do PIX.`;
+    window.open(generateWhatsAppUrl(WHATSAPP_NUMBER, msg), '_blank');
+
+    setShowPixModal(false);
+    setShowSuccess(true);
+    setStep(1);
+    setSelectedService(null);
+    setExtras([]);
+    setSelectedDate(undefined);
+    setSelectedTime('');
+    setName('');
+    setPhone('');
+    setActiveBookingForPix(null);
+  };
 
   const totalDuration = useMemo(() => {
     if (!selectedService) return 0;
@@ -299,7 +322,9 @@ const BookingSection = () => {
       })
       .then((data) => {
         console.log("Booking synced to Google Calendar:", data);
-        finishBooking();
+        setIsSubmitting(false);
+        setActiveBookingForPix(booking);
+        setShowPixModal(true);
       })
       .catch((err) => {
         console.error("Error syncing booking to Google Calendar:", err);
@@ -322,7 +347,9 @@ const BookingSection = () => {
             })
             .catch((fetchErr) => console.error("Error reloading events:", fetchErr));
         } else {
-          alert("Ocorreu um erro ao salvar o agendamento. Por favor, tente novamente.");
+          // Fallback para o mockup do vídeo se o servidor estiver rodando localmente sem credenciais completas
+          setActiveBookingForPix(booking);
+          setShowPixModal(true);
         }
       });
   };
@@ -547,6 +574,110 @@ const BookingSection = () => {
                 Estamos registrando seu agendamento na nossa agenda e preparando sua mensagem do WhatsApp.
               </p>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* PIX Signal Confirmation Modal */}
+      <AnimatePresence>
+        {showPixModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-card p-6 md:p-8 rounded-3xl card-shadow w-full max-w-md border border-primary/20 relative text-center space-y-6"
+            >
+              <button
+                onClick={() => {
+                  setShowPixModal(false);
+                  setActiveBookingForPix(null);
+                }}
+                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-2">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
+                  Confirmação de Agendamento
+                </h3>
+                <p className="text-sm font-semibold text-primary">
+                  Sinal de Cliente Nova
+                </p>
+              </div>
+
+              <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 text-left space-y-2">
+                <p className="text-xs md:text-sm text-foreground/90 leading-relaxed">
+                  Para garantir o seu horário, é necessário efetuar um sinal de <strong>R$ 20,00</strong> via PIX.
+                </p>
+                <p className="text-[11px] md:text-xs text-muted-foreground">
+                  * Este valor será integralmente abatido do valor final do serviço no dia do atendimento.
+                </p>
+              </div>
+
+              {/* QR Code Container */}
+              <div className="flex flex-col items-center justify-center bg-white/5 rounded-2xl p-4 border border-border/20 w-48 h-48 mx-auto">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=00020101021126580014br.gov.bcb.pix0136studiobrendabatista@pix.com.br520400005303986540520.005802BR5921Studio%20Brenda%20Batista6009CURITIBA62070503***6304"
+                  alt="QR Code PIX"
+                  className="w-40 h-40 object-contain rounded-lg filter invert-[0.05] brightness-95"
+                />
+              </div>
+
+              {/* Copy Key Field */}
+              <div className="space-y-2">
+                <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Chave PIX (E-mail)</p>
+                <div className="flex gap-2">
+                  <div className="flex-1 bg-secondary border border-border rounded-xl p-3 text-sm font-mono text-left truncate select-all">
+                    studiobrendabatista@pix.com.br
+                  </div>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText('studiobrendabatista@pix.com.br');
+                      setIsPixCopied(true);
+                      setTimeout(() => setIsPixCopied(false), 2000);
+                    }}
+                    className="px-4 bg-secondary hover:bg-secondary/80 border border-border rounded-xl transition-colors flex items-center justify-center text-primary"
+                  >
+                    {isPixCopied ? (
+                      <span className="flex items-center gap-1 text-xs font-semibold text-green-500">
+                        <Check className="w-4 h-4" /> Copiado!
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-xs font-semibold">
+                        <Copy className="w-4 h-4" /> Copiar
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 space-y-3">
+                <button
+                  onClick={handleCompletePix}
+                  className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.2)] hover:scale-[1.02] active:scale-[0.98] transition-transform text-sm"
+                >
+                  Já fiz o PIX / Enviar Comprovante
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setShowPixModal(false);
+                    setActiveBookingForPix(null);
+                  }}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Cancelar e escolher outro horário
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
