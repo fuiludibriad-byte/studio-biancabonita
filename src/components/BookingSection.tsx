@@ -15,7 +15,7 @@ type ServiceType = typeof SERVICES[0];
 
 const BookingSection = () => {
   const [step, setStep] = useState(1);
-  const [activeCategory, setActiveCategory] = useState('Unhas');
+  const [activeCategory, setActiveCategory] = useState('Cílios - Aplicação');
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
   const [extras, setExtras] = useState<ServiceType[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
