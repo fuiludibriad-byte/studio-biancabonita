@@ -27,21 +27,35 @@ export interface Booking {
 }
 
 export const SERVICES: Service[] = [
-  { name: 'Alongamento Molde F1', time: 180, price: 170, image: 'https://i.imgur.com/VQWp5Bul.jpeg', category: 'Unhas' },
-  { name: 'Manutenção Alongamento', time: 150, price: 120, image: 'https://i.imgur.com/O2bwT3Hl.jpeg', category: 'Unhas' },
-  { name: 'Banho de Gel', time: 120, price: 100, image: 'https://i.imgur.com/lA6WWaCl.jpeg', category: 'Unhas' },
-  { name: 'Esmaltação em Gel', time: 120, price: 70, image: 'https://i.imgur.com/0C4YNsql.jpeg', category: 'Unhas' },
+  // Cílios - Aplicação
+  { name: 'Volume Brasileiro', time: 120, price: 185, image: 'https://i.imgur.com/ezLWhuV.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Fox Eyes', time: 120, price: 190, image: 'https://i.imgur.com/76kIeKL.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Fox Eyes Castanho', time: 120, price: 190, image: 'https://i.imgur.com/76kIeKL.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Volume 4D', time: 120, price: 190, image: 'https://i.imgur.com/Kke0EKF.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Hibrido', time: 120, price: 165, image: 'https://i.imgur.com/xXctb20.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Lash Lifting', time: 90, price: 160, image: 'https://i.imgur.com/ybjObHC.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Volume Brasileiro Castanho', time: 120, price: 190, image: 'https://i.imgur.com/MVFQ6BW.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Efeito Sirena', time: 120, price: 170, image: 'https://i.imgur.com/DvJZexK.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Clássico Fio a fio', time: 120, price: 160, image: 'https://i.imgur.com/WwVyaOe.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Efeito Sirena Castanho', time: 120, price: 170, image: 'https://i.imgur.com/CVQ9j5X.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Volume Lua', time: 120, price: 170, image: 'https://i.imgur.com/Bo65V6w.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Mega Brasileiro', time: 150, price: 200, image: 'https://i.imgur.com/vQaGUoH.jpeg', category: 'Cílios - Aplicação' },
+  { name: 'Brow Lamination', time: 90, price: 150, image: 'https://i.imgur.com/vQaGUoH.jpeg', category: 'Cílios - Aplicação' },
+  
+  // Designer - Sobrancelha
+  { name: 'Design de sobrancelhas', time: 40, price: 50, image: 'https://i.imgur.com/HOZ8Djx.jpeg', category: 'Designer - Sobrancelha' },
+  { name: 'Design de sobrancelhas com Henna', time: 40, price: 65, image: 'https://i.imgur.com/HOZ8Djx.jpeg', category: 'Designer - Sobrancelha' }
 ];
 
 export const GALLERY_IMAGES = [
-  'https://i.imgur.com/qPlp82Kh.jpeg',
-  'https://i.imgur.com/ZnqvpSsh.jpeg',
-  'https://i.imgur.com/6TxVITZh.jpeg',
-  'https://i.imgur.com/VfrvuDCh.jpeg',
-  'https://i.imgur.com/IbTCZe2h.jpeg'
+  'https://i.imgur.com/mulpmhA.jpeg',
+  'https://i.imgur.com/guNBe7K.jpeg',
+  'https://i.imgur.com/lFYUkjP.jpeg',
+  'https://i.imgur.com/Kke0EKF.jpeg',
+  'https://i.imgur.com/MVFQ6BW.jpeg'
 ];
 
-export const WHATSAPP_NUMBER = '5541997114154';
+export const WHATSAPP_NUMBER = '5519995085020';
 
 export function isOpenNow(): boolean {
   const now = new Date();

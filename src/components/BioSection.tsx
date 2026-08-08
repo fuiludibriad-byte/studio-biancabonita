@@ -19,8 +19,8 @@ const BioSection = () => {
             
             {/* Main Image */}
             <img
-              src="https://i.imgur.com/hI9V4rm.jpeg"
-              alt="Klarissa Guarezi - Nail Designer"
+              src="https://i.imgur.com/fyHdRxC.jpeg"
+              alt="Bianca - Lash e Designer de Sobrancelhas"
               className="w-full h-full object-cover rounded-3xl card-shadow border border-border"
               loading="lazy"
               width={320}
@@ -44,10 +44,10 @@ const BioSection = () => {
           
           <div className="glass p-6 md:p-8 rounded-2xl border border-border/60 card-shadow space-y-4">
             <p className="text-lg text-foreground/90 leading-relaxed font-medium">
-              Meu nome é Klarissa Guarezi, tenho 23 anos e sou apaixonada pelo universo da Nail Art.
+              Sou a Bianca, 28 anos, Lash e Designer de sobrancelhas a 5 anos na área.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Acredito que as unhas são uma forma de expressão, autoestima e personalidade. Por isso, busco transformar cada atendimento em uma experiência única, unindo técnica, criatividade e atenção aos detalhes para criar unhas que valorizem a beleza e o estilo de cada cliente.
+              Tenho como missão unir técnica, sensibilidade e visagismo para realçar a beleza natural de cada mulher — com segurança, cuidado e muito carinho em cada detalhe.
             </p>
           </div>
         </motion.div>

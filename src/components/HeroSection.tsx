@@ -17,8 +17,8 @@ const HeroSection = () => {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <img
-        src="https://i.imgur.com/o64yc3dh.jpeg"
-        alt="STUDIO KLARISSA GUAREZI"
+        src="https://i.imgur.com/h8HxTcP.jpeg"
+        alt="STUDIO BIANCA BONITA"
         className="absolute inset-0 w-full h-full object-cover opacity-30"
         loading="eager"
         fetchPriority="high"
@@ -43,7 +43,7 @@ const HeroSection = () => {
           <span className="text-primary">beleza natural.</span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Unhas impecáveis, elegância e o cuidado exclusivo que você merece. Agende sua experiência no STUDIO KLARISSA GUAREZI.
+          Cílios e sobrancelhas impecáveis, elegância e o cuidado exclusivo que você merece. Agende sua experiência no STUDIO BIANCA BONITA.
         </p>
 
         <motion.button

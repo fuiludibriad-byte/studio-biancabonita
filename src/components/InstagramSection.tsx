@@ -12,14 +12,14 @@ const InstagramSection = () => (
       <h2 className="text-2xl md:text-3xl font-bold text-center">Siga no Instagram</h2>
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-        alt="Instagram STUDIO KLARISSA GUAREZI"
+        alt="Instagram STUDIO BIANCA BONITA"
         className="w-24 h-24 mx-auto object-contain hover:scale-110 transition-transform duration-300"
         loading="lazy"
         width={150}
         height={150}
       />
       <a
-        href="https://www.instagram.com/studio_klarissaguarezi/"
+        href="https://www.instagram.com/bianncabonita/"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-xl font-bold text-foreground transition-all hover:opacity-90"
