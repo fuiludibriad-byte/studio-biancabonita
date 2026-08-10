@@ -246,7 +246,7 @@ const BookingSection = () => {
     const finishBooking = () => {
       addBooking(bookingWithStatus);
 
-      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BRENDA BATISTA* ✨\n\n👤 *Cliente:* ${bookingWithStatus.name}\n📱 *Telefone:* ${bookingWithStatus.phone}\n✂️ *Serviço:* ${bookingWithStatus.service}\n📅 *Data/Horário:* ${bookingWithStatus.date} às ${bookingWithStatus.time}\n💰 *Valor Total:* R$ ${bookingWithStatus.price},00`;
+      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BIANCA BONITA* ✨\n\n👤 *Cliente:* ${bookingWithStatus.name}\n📱 *Telefone:* ${bookingWithStatus.phone}\n✂️ *Serviço:* ${bookingWithStatus.service}\n📅 *Data/Horário:* ${bookingWithStatus.date} às ${bookingWithStatus.time}\n💰 *Valor Total:* R$ ${bookingWithStatus.price},00`;
 
       if (comprovanteUrl) {
         msg += `\n💳 *Sinal Pago:* R$ ${SINAL_VALUE},00\n\n📎 *Comprovante do Sinal:*\n${comprovanteUrl}\n\n_Aguardando confirmação final do estúdio._`;
@@ -657,7 +657,7 @@ const BookingSection = () => {
                     <div className="p-3 rounded-2xl" style={{ background: '#ffffff', boxShadow: '0 0 30px rgba(201,162,39,0.3)' }}>
                       <img
                         src="/pix-brenda.png"
-                        alt="QR Code Pix - Brenda Coelho Batista"
+                        alt="QR Code Pix - Bianca Bonita"
                         className="w-44 h-44 object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${PIX_KEY}&bgcolor=FFFFFF&color=000000`;
@@ -666,7 +666,7 @@ const BookingSection = () => {
                     </div>
                   </div>
 
-                  <p className="text-center text-xs text-yellow-600/70 mb-4">Brenda Coelho Batista • Pix Aleatório</p>
+                  <p className="text-center text-xs text-yellow-600/70 mb-4">Bianca Bonita • Pix Aleatório</p>
 
                   {/* Pix key copy */}
                   <div className="rounded-xl p-3 mb-5 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,162,39,0.2)' }}>
