@@ -855,14 +855,14 @@ const AdminPanel = () => {
 
                 {scheduleTab === 'weekly' && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {[
                         { day: 1, label: 'Segunda-feira' }, { day: 2, label: 'Terça-feira' },
                         { day: 3, label: 'Quarta-feira' }, { day: 4, label: 'Quinta-feira' },
                         { day: 5, label: 'Sexta-feira' }, { day: 6, label: 'Sábado' },
                         { day: 0, label: 'Domingo' }
                       ].map(d => (
-                        <button key={d.day} onClick={() => setSelectedDay(d.day)} className={`py-3 rounded-xl text-sm font-semibold border transition-all ${selectedDay === d.day ? 'bg-primary/90 text-primary-foreground border-primary' : 'bg-background/50 border-primary/10 text-muted-foreground hover:bg-background'}`}>
+                        <button key={d.day} onClick={() => setSelectedDay(d.day)} className={`py-2.5 rounded-xl text-sm font-semibold border transition-all ${selectedDay === d.day ? 'bg-primary/90 text-primary-foreground border-primary' : 'bg-background/50 border-primary/10 text-muted-foreground hover:bg-background'}`}>
                           {d.label}
                         </button>
                       ))}
@@ -910,7 +910,7 @@ const AdminPanel = () => {
                           });
                           setNewTime('');
                         }}
-                        className="px-6 bg-primary text-primary-foreground font-bold rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                        className="px-6 py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" /> Adicionar
                       </button>
