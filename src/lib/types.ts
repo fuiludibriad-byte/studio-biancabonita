@@ -15,6 +15,15 @@ export interface ScheduleBlock {
   reason: string;
 }
 
+export interface ScheduleSettings {
+  weekly: {
+    [dayOfWeek: number]: string[];
+  };
+  specificDates: {
+    [dateStr: string]: string[];
+  };
+}
+
 export interface Booking {
   id: string;
   service: string;

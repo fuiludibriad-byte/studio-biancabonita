@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { SERVICES, isDayAllowed, getTimesForDate, WHATSAPP_NUMBER, generateWhatsAppUrl, formatPhone, getBookingDuration, ScheduleBlock, generateUUID } from '@/lib/types';
-import { addBooking, getBookings, getBlocks } from '@/lib/bookingStore';
+import { SERVICES, isDayAllowed, WHATSAPP_NUMBER, generateWhatsAppUrl, formatPhone, getBookingDuration, ScheduleBlock, generateUUID } from '@/lib/types';
+import { addBooking, getBookings, getBlocks, getScheduleSettings } from '@/lib/bookingStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -8,8 +8,6 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { CheckCircle, X, Plus, Copy, Check, Upload, FileImage } from 'lucide-react';
 
-const PIX_KEY = '9a3b3e57-f517-4eaf-a857-b1e60abb16df';
-const SINAL_VALUE = 30;
 
 type ServiceType = typeof SERVICES[0];
 
@@ -25,14 +23,6 @@ const BookingSection = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Pix Signal Modal states
-  const [showPixModal, setShowPixModal] = useState(false);
-  const [pixCopiado, setPixCopiado] = useState(false);
-  const [comprovanteFile, setComprovanteFile] = useState<File | null>(null);
-  const [comprovanteUploading, setComprovanteUploading] = useState(false);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const pendingBookingRef = useRef<any>(null);
 
   const totalDuration = useMemo(() => {
     if (!selectedService) return 0;
@@ -67,7 +57,12 @@ const BookingSection = () => {
     }
 
     const dateStr = format(selectedDate, 'dd/MM/yyyy');
-    const baseTimes = getTimesForDate(selectedDate);
+    
+    // Ler as configurações dinâmicas
+    const scheduleSettings = getScheduleSettings();
+    const dayOfWeek = selectedDate.getDay();
+    // Se existir uma configuração para a data específica, usa ela. Senão, usa a configuração da semana.
+    const baseTimes = scheduleSettings.specificDates[dateStr] || scheduleSettings.weekly[dayOfWeek] || [];
 
     const calculateLocalSlots = () => {
       // Mescla reservas locais e do Google Calendar para evitar duplicados e manter consistência imediata
@@ -231,34 +226,22 @@ const BookingSection = () => {
       status: 'accepted' as const,
     };
 
-    // Sinal obrigatório para todas as clientes
-    pendingBookingRef.current = booking;
-    setShowPixModal(true);
+    finishBookingFlow(booking);
   };
 
-  const finishBookingFlow = (booking: any, comprovanteUrl: string | null) => {
+  const finishBookingFlow = (booking: any) => {
     setIsSubmitting(true);
 
-    const bookingWithStatus = comprovanteUrl
-      ? { ...booking, status: 'pendente_confirmacao' as const, comprovante_url: comprovanteUrl }
-      : booking;
-
     const finishBooking = () => {
-      addBooking(bookingWithStatus);
+      addBooking(booking);
 
-      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BIANCA BONITA* ✨\n\n👤 *Cliente:* ${bookingWithStatus.name}\n📱 *Telefone:* ${bookingWithStatus.phone}\n✂️ *Serviço:* ${bookingWithStatus.service}\n📅 *Data/Horário:* ${bookingWithStatus.date} às ${bookingWithStatus.time}\n💰 *Valor Total:* R$ ${bookingWithStatus.price},00`;
+      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BIANCA BONITA* ✨\n\n👤 *Cliente:* ${booking.name}\n📱 *Telefone:* ${booking.phone}\n✂️ *Serviço:* ${booking.service}\n📅 *Data/Horário:* ${booking.date} às ${booking.time}\n💰 *Valor Total:* R$ ${booking.price},00`;
 
-      if (comprovanteUrl) {
-        msg += `\n💳 *Sinal Pago:* R$ ${SINAL_VALUE},00\n\n📎 *Comprovante do Sinal:*\n${comprovanteUrl}\n\n_Aguardando confirmação final do estúdio._`;
-      } else {
-        msg += `\n\nObrigado! 💕`;
-      }
+      msg += `\n\nObrigado! 💕`;
 
       window.location.href = generateWhatsAppUrl(WHATSAPP_NUMBER, msg);
 
       setIsSubmitting(false);
-      setShowPixModal(false);
-      setComprovanteFile(null);
       setShowSuccess(true);
       setStep(1);
       setSelectedService(null);
@@ -267,13 +250,12 @@ const BookingSection = () => {
       setSelectedTime('');
       setName('');
       setPhone('');
-      pendingBookingRef.current = null;
     };
 
     fetch('/api/calendar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'booking', booking: bookingWithStatus, duration: totalDuration }),
+      body: JSON.stringify({ type: 'booking', booking: booking, duration: totalDuration }),
     })
       .then(async (res) => {
         if (!res.ok) { const e = await res.json().catch(() => ({})); throw e; }
@@ -296,59 +278,6 @@ const BookingSection = () => {
           alert('Ocorreu um erro ao salvar o agendamento. Por favor, tente novamente.');
         }
       });
-  };
-
-  const handlePixCopy = () => {
-    navigator.clipboard.writeText(PIX_KEY).then(() => {
-      setPixCopiado(true);
-      setTimeout(() => setPixCopiado(false), 2500);
-    });
-  };
-
-  const handleFileSelect = (file: File | null) => {
-    if (!file) return;
-    const allowed = ['image/jpeg', 'image/png', 'application/pdf'];
-    if (!allowed.includes(file.type)) {
-      alert('Formato inválido. Use JPG, PNG ou PDF.');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      alert('Arquivo muito grande. Máximo 10MB.');
-      return;
-    }
-    setComprovanteFile(file);
-  };
-
-  const handleSubmitWithComprovante = async () => {
-    if (!comprovanteFile || !pendingBookingRef.current) return;
-    setComprovanteUploading(true);
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64 = e.target?.result as string;
-        const res = await fetch('/api/upload-comprovante', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fileName: comprovanteFile.name,
-            fileType: comprovanteFile.type,
-            fileData: base64,
-          }),
-        });
-        const data = await res.json();
-        setComprovanteUploading(false);
-        if (data.url) {
-          finishBookingFlow(pendingBookingRef.current, data.url);
-        } else {
-          alert('Erro ao enviar comprovante. Tente novamente.');
-        }
-      };
-      reader.readAsDataURL(comprovanteFile);
-    } catch {
-      setComprovanteUploading(false);
-      alert('Erro ao processar o arquivo. Tente novamente.');
-    }
   };
 
   const goBack = () => {
@@ -457,7 +386,10 @@ const BookingSection = () => {
                     disabled={(date) => {
                       const today = new Date();
                       today.setHours(0, 0, 0, 0);
-                      return date < today || !isDayAllowed(date);
+                      const scheduleSettings = getScheduleSettings();
+                      const dateStr = format(date, 'dd/MM/yyyy');
+                      const times = scheduleSettings.specificDates[dateStr] || scheduleSettings.weekly[date.getDay()] || [];
+                      return date < today || !isDayAllowed(date) || times.length === 0;
                     }}
                     className="pointer-events-auto"
                   />
@@ -592,174 +524,6 @@ const BookingSection = () => {
         )}
       </AnimatePresence>
 
-      {/* Pix Signal Modal - New Clients */}
-      <AnimatePresence>
-        {showPixModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto"
-          >
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.92, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="relative w-full max-w-md my-4"
-              style={{
-                background: 'linear-gradient(135deg, #1a1208 0%, #0d0d0d 50%, #1a1208 100%)',
-                borderRadius: '28px',
-                padding: '2px',
-                boxShadow: '0 0 60px rgba(180,140,60,0.25), 0 20px 60px rgba(0,0,0,0.8)',
-              }}
-            >
-              {/* Golden border gradient wrapper */}
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, #c9a227, #f0d060, #a07820, #f0d060, #c9a227)',
-                  borderRadius: '28px',
-                  padding: '2px',
-                }}
-              >
-                <div
-                  style={{
-                    background: 'linear-gradient(160deg, #1c1407 0%, #0a0a0a 60%, #1c1407 100%)',
-                    borderRadius: '26px',
-                    padding: '32px 28px',
-                  }}
-                >
-                  {/* Close button */}
-                  <button
-                    onClick={() => { setShowPixModal(false); setComprovanteFile(null); }}
-                    className="absolute top-5 right-5 text-yellow-600/70 hover:text-yellow-400 transition-colors z-10"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-
-                  {/* Header */}
-                  <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-3" style={{ background: 'linear-gradient(135deg, #c9a227, #f0d060)' }}>
-                      <span className="text-black font-bold text-lg">✦</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-yellow-300 tracking-wide">Garantia de Horário</h3>
-                    <p className="text-yellow-600/80 text-sm mt-1 font-medium">Sinal de Agendamento</p>
-                  </div>
-
-                  {/* Info notice */}
-                  <div className="rounded-xl p-3 mb-5 text-center text-xs leading-relaxed" style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.25)', color: '#d4a843' }}>
-                    Para clientes novas, pedimos um sinal de <strong>R$ {SINAL_VALUE},00</strong> via Pix para garantir seu horário.<br />
-                    <span style={{ color: '#a07820' }}>O valor é descontado no total do serviço no dia do atendimento.</span>
-                  </div>
-
-                  {/* QR Code */}
-                  <div className="flex justify-center mb-5">
-                    <div className="p-3 rounded-2xl" style={{ background: '#ffffff', boxShadow: '0 0 30px rgba(201,162,39,0.3)' }}>
-                      <img
-                        src="/pix-brenda.png"
-                        alt="QR Code Pix - Bianca Bonita"
-                        className="w-44 h-44 object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${PIX_KEY}&bgcolor=FFFFFF&color=000000`;
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <p className="text-center text-xs text-yellow-600/70 mb-4">Bianca Bonita • Pix Aleatório</p>
-
-                  {/* Pix key copy */}
-                  <div className="rounded-xl p-3 mb-5 flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(201,162,39,0.2)' }}>
-                    <span className="flex-1 text-xs font-mono truncate" style={{ color: '#c9a227' }}>{PIX_KEY}</span>
-                    <button
-                      onClick={handlePixCopy}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0"
-                      style={{
-                        background: pixCopiado ? 'rgba(74,222,128,0.15)' : 'linear-gradient(135deg, #c9a227, #f0d060)',
-                        color: pixCopiado ? '#4ade80' : '#000',
-                        border: pixCopiado ? '1px solid #4ade80' : 'none',
-                      }}
-                    >
-                      {pixCopiado ? <><Check className="w-3 h-3" /> Copiado!</> : <><Copy className="w-3 h-3" /> Copiar</>}
-                    </button>
-                  </div>
-
-                  {/* Upload comprovante */}
-                  <div className="mb-5">
-                    <p className="text-xs font-semibold mb-2 uppercase tracking-widest" style={{ color: '#c9a227' }}>Comprovante do Pix *</p>
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-                      onDragLeave={() => setIsDragOver(false)}
-                      onDrop={(e) => { e.preventDefault(); setIsDragOver(false); handleFileSelect(e.dataTransfer.files[0]); }}
-                      className="rounded-xl p-5 text-center cursor-pointer transition-all"
-                      style={{
-                        background: isDragOver ? 'rgba(201,162,39,0.12)' : comprovanteFile ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
-                        border: `2px dashed ${isDragOver ? '#c9a227' : comprovanteFile ? '#4ade80' : 'rgba(201,162,39,0.3)'}`,
-                      }}
-                    >
-                      {comprovanteFile ? (
-                        <div className="flex flex-col items-center gap-2">
-                          <FileImage className="w-8 h-8" style={{ color: '#4ade80' }} />
-                          <p className="text-xs font-medium" style={{ color: '#4ade80' }}>{comprovanteFile.name}</p>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setComprovanteFile(null); }}
-                            className="text-xs underline"
-                            style={{ color: '#a07820' }}
-                          >Trocar arquivo</button>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-2">
-                          <Upload className="w-7 h-7" style={{ color: '#c9a227' }} />
-                          <p className="text-xs" style={{ color: '#a07820' }}>Arraste ou clique para anexar</p>
-                          <p className="text-xs" style={{ color: '#5a4010' }}>JPG, PNG ou PDF • Máx 10MB</p>
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,application/pdf"
-                      className="hidden"
-                      onChange={(e) => handleFileSelect(e.target.files?.[0] || null)}
-                    />
-                  </div>
-
-                  {/* Confirm button */}
-                  <button
-                    onClick={handleSubmitWithComprovante}
-                    disabled={!comprovanteFile || comprovanteUploading}
-                    className="w-full py-4 rounded-xl font-bold text-sm tracking-wide transition-all"
-                    style={{
-                      background: comprovanteFile && !comprovanteUploading
-                        ? 'linear-gradient(135deg, #c9a227, #f0d060, #c9a227)'
-                        : 'rgba(255,255,255,0.08)',
-                      color: comprovanteFile && !comprovanteUploading ? '#000' : '#555',
-                      cursor: comprovanteFile && !comprovanteUploading ? 'pointer' : 'not-allowed',
-                      boxShadow: comprovanteFile && !comprovanteUploading ? '0 0 30px rgba(201,162,39,0.4)' : 'none',
-                    }}
-                  >
-                    {comprovanteUploading ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-black/30 border-t-black animate-spin" />
-                        Enviando comprovante...
-                      </span>
-                    ) : (
-                      '✦ Concluir e Confirmar no WhatsApp'
-                    )}
-                  </button>
-
-                  {!comprovanteFile && (
-                    <p className="text-center text-xs mt-3" style={{ color: '#5a4010' }}>
-                      Anexe o comprovante para liberar o botão
-                    </p>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };

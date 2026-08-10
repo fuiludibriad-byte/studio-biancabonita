@@ -1,8 +1,9 @@
-import { Booking, ScheduleBlock } from './types';
+import { Booking, ScheduleBlock, ScheduleSettings } from './types';
 
 const BOOKINGS_KEY = 'classea_bookings';
 const COMPLETED_KEY = 'classea_completed';
 const BLOCKS_KEY = 'studiogaby_blocks';
+const SCHEDULE_SETTINGS_KEY = 'studio_schedule_settings';
 
 // Safe localStorage wrappers — prevent crashes in restricted webviews (e.g. Instagram browser)
 function lsGet(key: string): string | null {
@@ -67,4 +68,27 @@ export function removeCompleted(id: string): Booking | undefined {
   const removed = completed.find(b => b.id === id);
   saveCompleted(completed.filter(b => b.id !== id));
   return removed;
+}
+
+export function getScheduleSettings(): ScheduleSettings {
+  try {
+    const data = lsGet(SCHEDULE_SETTINGS_KEY);
+    if (data) return JSON.parse(data);
+  } catch { /* noop */ }
+  return {
+    weekly: {
+      1: ['09:00', '10:00', '14:00', '17:00', '17:30', '18:00', '18:30'],
+      2: ['09:00', '10:00', '14:00', '17:00', '17:30', '18:00', '18:30'],
+      3: ['09:00', '10:00', '14:00', '17:00', '17:30', '18:00', '18:30'],
+      4: ['09:00', '10:00', '14:00', '17:00', '17:30', '18:00', '18:30'],
+      5: ['09:00', '10:00', '14:00', '17:00', '17:30', '18:00', '18:30'],
+      6: ['10:00', '12:30', '14:00'],
+      0: [],
+    },
+    specificDates: {}
+  };
+}
+
+export function saveScheduleSettings(settings: ScheduleSettings): void {
+  lsSet(SCHEDULE_SETTINGS_KEY, JSON.stringify(settings));
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Booking, SERVICES, generateWhatsAppUrl, formatPhone, ScheduleBlock, generateUUID } from '@/lib/types';
-import { getBookings, saveBookings, getCompleted, saveCompleted, addCompleted, removeCompleted, addBooking, getBlocks, saveBlocks, addBlock, removeBlock } from '@/lib/bookingStore';
+import { Booking, SERVICES, generateWhatsAppUrl, formatPhone, ScheduleBlock, generateUUID, ScheduleSettings } from '@/lib/types';
+import { getBookings, saveBookings, getCompleted, saveCompleted, addCompleted, removeCompleted, addBooking, getBlocks, saveBlocks, addBlock, removeBlock, getScheduleSettings, saveScheduleSettings } from '@/lib/bookingStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CalendarDays, DollarSign, Scissors, TrendingUp, ArrowLeft, Plus, X, Check, Clock, Pencil, Trash2, Phone, Search, Settings } from 'lucide-react';
 
 type FilterType = 'today' | 'week' | 'month' | 'year';
-type TabType = 'bookings' | 'dashboard' | 'add' | 'settings';
+type TabType = 'bookings' | 'dashboard' | 'schedule' | 'add' | 'settings';
 
 // Safe localStorage access (fails silently in restricted webviews)
 function safeLocalGet(key: string): string | null {
@@ -85,6 +85,13 @@ const AdminPanel = () => {
   const [studioName, setStudioName] = useState('Studio Bianca Bonita');
   const [ownerEmail, setOwnerEmail] = useState('');
   const [isProvisioning, setIsProvisioning] = useState(false);
+
+  // Schedule config state
+  const [scheduleSettings, setScheduleSettings] = useState<ScheduleSettings>(getScheduleSettings());
+  const [scheduleTab, setScheduleTab] = useState<'weekly' | 'specific'>('weekly');
+  const [selectedDay, setSelectedDay] = useState<number>(1);
+  const [selectedSpecificDate, setSelectedSpecificDate] = useState<string>('');
+  const [newTime, setNewTime] = useState('');
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -517,6 +524,7 @@ const AdminPanel = () => {
   const tabs = [
     { key: 'bookings' as TabType, label: 'Agendamentos', icon: <CalendarDays className="w-4 h-4" />, badge: bookings.length + blocks.length },
     { key: 'dashboard' as TabType, label: 'Dashboard', icon: <TrendingUp className="w-4 h-4" /> },
+    { key: 'schedule' as TabType, label: 'Horários', icon: <Clock className="w-4 h-4" /> },
     { key: 'add' as TabType, label: 'Adicionar', icon: <Plus className="w-4 h-4" /> },
     { key: 'settings' as TabType, label: 'Configurações', icon: <Settings className="w-4 h-4" /> },
   ];
@@ -823,6 +831,147 @@ const AdminPanel = () => {
                       )}
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── SCHEDULE TAB ── */}
+          {tab === 'schedule' && (
+            <div className="max-w-2xl mx-auto space-y-6">
+              <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-primary/10 p-6 md:p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center"><Clock className="w-5 h-5 text-primary" /></div>
+                  <div>
+                    <h3 className="font-bold text-foreground">Horários de Atendimento</h3>
+                    <p className="text-xs text-muted-foreground">Configure os horários de início permitidos no estúdio por dia da semana ou por data específica. Se um dia tiver 0 horários, ele será considerado fechado.</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 mb-6">
+                  <button onClick={() => setScheduleTab('weekly')} className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${scheduleTab === 'weekly' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_-3px_hsl(45_97%_54%/0.4)]' : 'bg-background border border-primary/10 text-muted-foreground hover:text-foreground'}`}>Grade Semanal</button>
+                  <button onClick={() => setScheduleTab('specific')} className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${scheduleTab === 'specific' ? 'bg-primary text-primary-foreground shadow-[0_0_15px_-3px_hsl(45_97%_54%/0.4)]' : 'bg-background border border-primary/10 text-muted-foreground hover:text-foreground'}`}>Datas Específicas</button>
+                </div>
+
+                {scheduleTab === 'weekly' && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { day: 1, label: 'Segunda-feira' }, { day: 2, label: 'Terça-feira' },
+                        { day: 3, label: 'Quarta-feira' }, { day: 4, label: 'Quinta-feira' },
+                        { day: 5, label: 'Sexta-feira' }, { day: 6, label: 'Sábado' },
+                        { day: 0, label: 'Domingo' }
+                      ].map(d => (
+                        <button key={d.day} onClick={() => setSelectedDay(d.day)} className={`py-3 rounded-xl text-sm font-semibold border transition-all ${selectedDay === d.day ? 'bg-primary/90 text-primary-foreground border-primary' : 'bg-background/50 border-primary/10 text-muted-foreground hover:bg-background'}`}>
+                          {d.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {scheduleTab === 'specific' && (
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-2">Selecione a Data</label>
+                      <input type="date" value={selectedSpecificDate} onChange={e => setSelectedSpecificDate(e.target.value)} className="w-full bg-background/50 border border-primary/10 rounded-xl p-3 text-foreground outline-none focus:border-primary/40" style={{ colorScheme: 'dark' }} />
+                    </div>
+                  </div>
+                )}
+
+                {(scheduleTab === 'weekly' || (scheduleTab === 'specific' && selectedSpecificDate)) && (
+                  <div className="mt-8 pt-8 border-t border-primary/10">
+                    <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">Adicionar Horário</h4>
+                    <div className="flex gap-3 mb-6">
+                      <div className="relative flex-1">
+                        <Clock className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
+                        <input type="time" value={newTime} onChange={e => setNewTime(e.target.value)} className="w-full bg-background/50 border border-primary/10 rounded-xl p-3 pl-10 text-foreground outline-none focus:border-primary/40" style={{ colorScheme: 'dark' }} />
+                      </div>
+                      <button 
+                        onClick={() => {
+                          if (!newTime) return;
+                          setScheduleSettings(prev => {
+                            const updated = { ...prev, weekly: { ...prev.weekly }, specificDates: { ...prev.specificDates } };
+                            if (scheduleTab === 'weekly') {
+                              if (!updated.weekly[selectedDay].includes(newTime)) {
+                                updated.weekly[selectedDay] = [...updated.weekly[selectedDay], newTime].sort();
+                              }
+                            } else {
+                              const d = selectedSpecificDate.split('-');
+                              if (d.length >= 3) {
+                                const formatted = `${d[2]}/${d[1]}/${d[0]}`;
+                                const current = updated.specificDates[formatted] || [];
+                                if (!current.includes(newTime)) {
+                                  updated.specificDates[formatted] = [...current, newTime].sort();
+                                }
+                              }
+                            }
+                            return updated;
+                          });
+                          setNewTime('');
+                        }}
+                        className="px-6 bg-primary text-primary-foreground font-bold rounded-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" /> Adicionar
+                      </button>
+                    </div>
+
+                    <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                      Horários Configurados
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(() => {
+                        let times: string[] = [];
+                        if (scheduleTab === 'weekly') times = scheduleSettings.weekly[selectedDay] || [];
+                        else {
+                          const d = selectedSpecificDate.split('-');
+                          if (d.length >= 3) {
+                            times = scheduleSettings.specificDates[`${d[2]}/${d[1]}/${d[0]}`] || [];
+                          }
+                        }
+                        
+                        if (times.length === 0) return <p className="text-sm text-muted-foreground">Nenhum horário definido (fechado).</p>;
+
+                        return times.map(time => (
+                          <div key={time} className="flex items-center gap-2 bg-primary/10 border border-primary/20 pl-3 pr-1 py-1 rounded-lg">
+                            <span className="font-mono text-primary font-bold text-sm">{time}</span>
+                            <button 
+                              onClick={() => {
+                                setScheduleSettings(prev => {
+                                  const updated = { ...prev, weekly: { ...prev.weekly }, specificDates: { ...prev.specificDates } };
+                                  if (scheduleTab === 'weekly') {
+                                    updated.weekly[selectedDay] = updated.weekly[selectedDay].filter(t => t !== time);
+                                  } else {
+                                    const d = selectedSpecificDate.split('-');
+                                    if (d.length >= 3) {
+                                      const formatted = `${d[2]}/${d[1]}/${d[0]}`;
+                                      updated.specificDates[formatted] = updated.specificDates[formatted].filter(t => t !== time);
+                                    }
+                                  }
+                                  return updated;
+                                });
+                              }}
+                              className="p-1.5 hover:bg-destructive/20 text-muted-foreground hover:text-destructive rounded-md transition-colors"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ));
+                      })()}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mt-8 pt-6 border-t border-primary/10 flex justify-end">
+                  <button 
+                    onClick={() => {
+                      saveScheduleSettings(scheduleSettings);
+                      toast.success('Horários salvos com sucesso!');
+                    }}
+                    className="px-6 py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-[0_0_15px_-3px_hsl(45_97%_54%/0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                  >
+                    <Check className="w-4 h-4" /> Salvar Configurações
+                  </button>
                 </div>
               </div>
             </div>
