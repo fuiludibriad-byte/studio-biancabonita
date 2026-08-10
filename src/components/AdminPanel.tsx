@@ -449,7 +449,7 @@ const AdminPanel = () => {
   const totalRevenue = filteredCompleted.reduce((sum, b) => sum + (b.price || 0), 0);
   const totalServices = filteredCompleted.length;
   const pendingCount = bookings.filter(b => b && b.status === 'pending').length;
-  const acceptedCount = bookings.filter(b => b && b.status === 'accepted').length;
+  const acceptedCount = bookings.filter(b => b && (b.status === 'accepted' || b.status === 'pendente_confirmacao')).length;
 
   const unifiedAgenda = useMemo(() => {
     type AgendaItem =
@@ -461,7 +461,13 @@ const AdminPanel = () => {
 
     listBookings.forEach(b => {
       if (!b) return;
-      if (subFilter !== 'all' && subFilter !== 'completed' && b.status !== subFilter) return;
+      if (subFilter !== 'all' && subFilter !== 'completed') {
+        if (subFilter === 'accepted' && (b.status === 'accepted' || b.status === 'pendente_confirmacao')) {
+          // allow
+        } else if (b.status !== subFilter) {
+          return;
+        }
+      }
       let timestamp = 0;
       try {
         const parts = (b.date || '').split('/');
