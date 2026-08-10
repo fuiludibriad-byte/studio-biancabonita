@@ -223,7 +223,7 @@ const BookingSection = () => {
       time: selectedTime,
       name: name.trim(),
       phone: phone.trim(),
-      status: 'accepted' as const,
+      status: 'pendente_confirmacao' as const,
     };
 
     finishBookingFlow(booking);
