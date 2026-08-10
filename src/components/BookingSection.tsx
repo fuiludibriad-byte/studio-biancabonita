@@ -107,21 +107,6 @@ const BookingSection = () => {
           return false;
         }
 
-        // Intervalo de almoço fixo das 12:00 às 13:00 (720 a 780 minutos)
-        const lunchStart = 720;
-        const lunchEnd = 780;
-        const overlapsLunch = Math.max(start, lunchStart) < Math.min(end, lunchEnd);
-        if (overlapsLunch) {
-          return false;
-        }
-
-        // Limite de segurança do dia (expediente finaliza às 20:30 em dias de semana, 17:00 aos Sábados)
-        const isSaturday = selectedDate.getDay() === 6;
-        const limitOfDay = isSaturday ? 1020 : 1230;
-        if (end > limitOfDay) {
-          return false;
-        }
-
         // Check overlap with schedule blocks of the day
         const hasBlockOverlap = blocks.some((block) => {
           if (block.allDay) return true;
