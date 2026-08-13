@@ -48,7 +48,7 @@ const Admin = () => {
           <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 shadow-[0_0_30px_-5px_hsl(45_97%_54%/0.3)]">
             <Scissors className="w-9 h-9 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">STUDIO BIANCA BONITA</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">STUDIO BIANNCA BONITA</h1>
           <p className="text-sm text-muted-foreground mt-1">Painel Administrativo</p>
         </div>
 

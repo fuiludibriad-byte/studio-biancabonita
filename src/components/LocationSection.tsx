@@ -32,7 +32,7 @@ const LocationSection = () => {
             style={{ border: 0 }}
             allowFullScreen
             loading="lazy"
-            title="Localização STUDIO BIANCA BONITA"
+            title="Localização STUDIO BIANNCA BONITA"
           />
         </div>
 
@@ -51,7 +51,7 @@ const LocationSection = () => {
         />
 
         <div className="text-center">
-          <p className="font-bold text-lg">Studio Bianca Bonita</p>
+          <p className="font-bold text-lg">Studio Biannca Bonita</p>
           <p className="text-sm text-muted-foreground">Rua Antonio Bernardes 270 - Sala 02<br/>Loteamento Remanso Campineiro - Hortolândia - SP</p>
         </div>
       </motion.div>

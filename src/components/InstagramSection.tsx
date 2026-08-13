@@ -12,7 +12,7 @@ const InstagramSection = () => (
       <h2 className="text-2xl md:text-3xl font-bold text-center">Siga no Instagram</h2>
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
-        alt="Instagram STUDIO BIANCA BONITA"
+        alt="Instagram STUDIO BIANNCA BONITA"
         className="w-24 h-24 mx-auto object-contain hover:scale-110 transition-transform duration-300"
         loading="lazy"
         width={150}

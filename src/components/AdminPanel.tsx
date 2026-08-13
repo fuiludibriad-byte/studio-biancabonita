@@ -82,7 +82,7 @@ const AdminPanel = () => {
   const [isAddingBlock, setIsAddingBlock] = useState(false);
 
   // Settings state
-  const [studioName, setStudioName] = useState('Studio Bianca Bonita');
+  const [studioName, setStudioName] = useState('Studio Biannca Bonita');
   const [ownerEmail, setOwnerEmail] = useState('');
   const [isProvisioning, setIsProvisioning] = useState(false);
 
@@ -196,7 +196,7 @@ const AdminPanel = () => {
 
   const handleAccept = (booking: Booking) => {
     if (!booking) return;
-    const msg = `✨ *STUDIO BIANCA BONITA* ✨\n\nOlá *${booking.name}*! 👋\n\nSeu agendamento foi *CONFIRMADO* com sucesso! ✅\n\n📋 *Serviço:* ${booking.service}\n💰 *Valor:* R$ ${booking.price},00\n📅 *Data:* ${booking.date}\n🕐 *Horário:* ${booking.time}\n\n📍 *Endereço:* Edifício Ilha de Manhattan - Av. Vereador Arlindo Chemin, nº 50, Sala 102 (Piso 1, à esquerda) - Centro, Campo Largo - PR\n\nEstamos te esperando! 🌸\nAté lá! 🤝`;
+    const msg = `✨ *STUDIO BIANNCA BONITA* ✨\n\nOlá *${booking.name}*! 👋\n\nSeu agendamento foi *CONFIRMADO* com sucesso! ✅\n\n📋 *Serviço:* ${booking.service}\n💰 *Valor:* R$ ${booking.price},00\n📅 *Data:* ${booking.date}\n🕐 *Horário:* ${booking.time}\n\n📍 *Endereço:* Rua Antonio Bernardes 270 - Sala 02 (Loteamento Remanso Campineiro) - Hortolândia - SP\n\nEstamos te esperando! 🌸\nAté lá! 🤝`;
     if (booking.phone) { try { window.open(generateWhatsAppUrl(booking.phone, msg), '_blank'); } catch (e) { /* noop */ } }
     const updated = bookings.map(b => b.id === booking.id ? { ...booking, status: 'accepted' as const } : b);
     saveBookings(updated); setBookings(updated);
@@ -220,7 +220,7 @@ const AdminPanel = () => {
 
   const handleRefuse = (booking: Booking, reason: string) => {
     if (!booking) return;
-    const msg = `✨ *STUDIO BIANCA BONITA* ✨\n\nOlá *${booking.name}*! 👋\n\nInfelizmente não poderemos atender seu agendamento. 😔\n\n📋 *Serviço:* ${booking.service}\n📅 *Data:* ${booking.date}\n🕐 *Horário:* ${booking.time}\n\n❌ *Motivo:* ${reason}\n\nPor favor, escolha outro horário disponível no nosso site. Desculpe pelo inconveniente! 🙏\n\nEstamos à disposição! 🌸`;
+    const msg = `✨ *STUDIO BIANNCA BONITA* ✨\n\nOlá *${booking.name}*! 👋\n\nInfelizmente não poderemos atender seu agendamento. 😔\n\n📋 *Serviço:* ${booking.service}\n📅 *Data:* ${booking.date}\n🕐 *Horário:* ${booking.time}\n\n❌ *Motivo:* ${reason}\n\nPor favor, escolha outro horário disponível no nosso site. Desculpe pelo inconveniente! 🙏\n\nEstamos à disposição! 🌸`;
     if (booking.phone) { try { window.open(generateWhatsAppUrl(booking.phone, msg), '_blank'); } catch (e) { /* noop */ } }
     const updated = bookings.filter(b => b.id !== booking.id);
     saveBookings(updated); setBookings(updated); setRefusingId(null);
@@ -549,7 +549,7 @@ const AdminPanel = () => {
             </div>
             <div>
               <h2 className="text-lg font-bold text-foreground">Painel de Controle</h2>
-              <p className="text-xs text-muted-foreground">Studio Bianca Bonita</p>
+              <p className="text-xs text-muted-foreground">Studio Biannca Bonita</p>
             </div>
           </div>
           <button onClick={() => navigate('/')} className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm">

@@ -220,7 +220,7 @@ const BookingSection = () => {
     const finishBooking = () => {
       addBooking(booking);
 
-      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BIANCA BONITA* ✨\n\n👤 *Cliente:* ${booking.name}\n📱 *Telefone:* ${booking.phone}\n✂️ *Serviço:* ${booking.service}\n📅 *Data/Horário:* ${booking.date} às ${booking.time}\n💰 *Valor Total:* R$ ${booking.price},00`;
+      let msg = `✨ *NOVO AGENDAMENTO - STUDIO BIANNCA BONITA* ✨\n\n👤 *Cliente:* ${booking.name}\n📱 *Telefone:* ${booking.phone}\n✂️ *Serviço:* ${booking.service}\n📅 *Data/Horário:* ${booking.date} às ${booking.time}\n💰 *Valor Total:* R$ ${booking.price},00`;
 
       msg += `\n\nObrigado! 💕`;
 

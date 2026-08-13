@@ -81,7 +81,7 @@ const ContactSection = () => (
           className="flex justify-center"
         >
           <a
-            href={generateWhatsAppUrl(WHATSAPP_NUMBER, 'Olá Studio Bianca Bonita, tenho uma dúvida!')}
+            href={generateWhatsAppUrl(WHATSAPP_NUMBER, 'Olá Studio Biannca Bonita, tenho uma dúvida!')}
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-3 px-10 py-4 bg-success text-success-foreground font-bold rounded-2xl transition-all hover:shadow-[0_0_30px_-5px_hsl(142_76%_36%/0.5)] hover:scale-[1.03] active:scale-95"

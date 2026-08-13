@@ -51,9 +51,9 @@ export const SERVICES: Service[] = [
   { name: 'Mega Brasileiro', time: 150, price: 200, image: 'https://i.imgur.com/H5h47Qt.jpeg', category: 'Cílios - Aplicação' },
   { name: 'Brow Lamination', time: 90, price: 150, image: 'https://i.imgur.com/PGkxWG2.jpeg', category: 'Cílios - Aplicação' },
   
-  // Designer - Sobrancelha
-  { name: 'Design de sobrancelhas', time: 40, price: 50, image: 'https://i.imgur.com/1KtZ93l.jpeg', category: 'Designer - Sobrancelha' },
-  { name: 'Design de sobrancelhas com Henna', time: 40, price: 65, image: 'https://i.imgur.com/Of8LVLf.jpeg', category: 'Designer - Sobrancelha' }
+  // Design - Sobrancelha
+  { name: 'Design de sobrancelhas', time: 40, price: 50, image: 'https://i.imgur.com/1KtZ93l.jpeg', category: 'Design - Sobrancelha' },
+  { name: 'Design de sobrancelhas com Henna', time: 40, price: 65, image: 'https://i.imgur.com/Of8LVLf.jpeg', category: 'Design - Sobrancelha' }
 ];
 
 export const GALLERY_IMAGES = [
@@ -64,7 +64,7 @@ export const GALLERY_IMAGES = [
   'https://i.imgur.com/MVFQ6BW.jpeg'
 ];
 
-export const WHATSAPP_NUMBER = '5519995085020';
+export const WHATSAPP_NUMBER = '5519992872338';
 
 export function isOpenNow(): boolean {
   const now = new Date();
